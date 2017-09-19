@@ -1,4 +1,4 @@
 conf = {
-	'mov_coef':1.3,
+	'mov_coef':2.0,
 	'fps':30
 }
