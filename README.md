@@ -9,11 +9,13 @@ $ sudo ./install_simplecv.sh
 ``` 
 ## Instalar django
 
-```pip install django
+```
+pip install django
 ``` 
 Ir a la carpeta 'servidorcam' y correr
 
-```./manage.py migrate
+```
+./manage.py migrate
 ``` 
 
 En 'settings.py' editar STATICFILES_DIR con el directorio donde tienen el archivo de la camara.
