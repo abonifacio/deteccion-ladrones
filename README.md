@@ -9,9 +9,8 @@ $ sudo ./install.sh
 ``` 
 
 
-#### Correr webcam con detección de movimiento
+#### Correr servidor con streaming
 
 ``` sh
-$ sudo chmod 755 ./run.sh
-$ python webcam.py
+$ node server.js
 ``` 
