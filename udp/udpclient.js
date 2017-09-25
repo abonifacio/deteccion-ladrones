@@ -17,7 +17,7 @@ function createClient(PORT){
 	return {
 		send : function(data,lengthOrcallback,callback){
 			if(lengthOrcallback && typeof lengthOrcallback == 'function'){
-				sendAny(data,data.byteLength,callback);
+				sendAny(data,data.byteLength,lengthOrcallback);
 			}else{
 				sendAny(data,lengthOrcallback,callback);
 			}

@@ -5,6 +5,7 @@ const io = require('socket.io')(http);
 const conf = require('./conf');
 const udpserver = require('./udp/udpserver');
 const execFile = require('child_process').execFile;
+const sharp = require('sharp');
 
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
@@ -18,7 +19,9 @@ function onDectionMsg(data,rinfo){
 }
 
 function onStreamFrame(data,rinfo){
-  io.sockets.volatile.emit('frame',data);
+	sharp(data).jpeg({quality:70}).toBuffer().then(jpeg => {
+  		io.sockets.volatile.emit('frame',jpeg);
+	});
 }
 
 
