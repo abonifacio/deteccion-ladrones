@@ -5,13 +5,13 @@ Detección de ladrones con RaspberryPi y webcam
 
 ``` sh
 $ sudo chmod 755 ./install_simplecv.sh
-$ sudo ./install_simplecv.sh
+$ sudo ./install.sh
 ``` 
 
 
 #### Correr webcam con detección de movimiento
 
 ``` sh
-$ cd webcam
+$ sudo chmod 755 ./run.sh
 $ python webcam.py
 ``` 
