@@ -9,4 +9,4 @@ apt install -y nodejs npm libopencv-dev libvips
 npm install -g bower
 
 npm install
-bower install
+bower install --allow-root
