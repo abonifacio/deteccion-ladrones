@@ -4,7 +4,7 @@ Detección de ladrones con RaspberryPi y webcam
 ## Instalación
 
 ``` sh
-$ sudo chmod 755 ./install_simplecv.sh
+$ sudo chmod 755 ./install.sh
 $ sudo ./install.sh
 ``` 
 

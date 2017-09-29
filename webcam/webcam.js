@@ -1,25 +1,28 @@
 const cv = require('opencv');
 const conf = require('../conf');
-const detection = require('../udp/udpclient')(conf.webcam.port);
 const streaming = require('../udp/udpclient')(conf.streaming.port);
+const detect = require('../detection/detection');
 
 const DELAY = 1000 / conf.webcam.fps;
-// const DELAY = 300;
+const WIDTH  = conf.webcam.width;
+const HEIGHT = conf.webcam.height;
 
 const camara = new cv.VideoCapture(0); 
-camara.setWidth(630);
-camara.setHeight(465);
 
+camara.setWidth(WIDTH);
+camara.setHeight(HEIGHT);
+
+
+
+var Last = undefined;
 
 function readCamara(){
 	camara.read(function(err,img){
 		if(err) throw err;
-		const data = img.toBuffer();
-		detection.send(data);
-		streaming.send(data,function(){
+		detect(img);
+		streaming.send(img.toBuffer(),function(){
 			setTimeout(readCamara,DELAY);
 		});
-
 	});
 }
 

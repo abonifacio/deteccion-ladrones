@@ -1,14 +1,23 @@
 const dgram = require('dgram');
-const HOST = require('../conf').common.host;
 
 // data -> ArrayBuffer
 // callback -> function(bytes){}
 
+const MSG_MAXSIZE = 65526;
+
 function createClient(PORT){
-	const client = dgram.createSocket('udp4');
+	const client = dgram.createSocket('udp6');
+
 
 	function sendAny(data,length,callback){
-		client.send(data,0,length,PORT,HOST,function(err,bytes){
+
+		if(length>MSG_MAXSIZE){
+			console.log('descartando paquete demasiado grande',length);
+			if(callback) callback();
+			return;
+		}
+
+		client.send(data,0,length,PORT,false,function(err,bytes){
 			if(err) throw err;
 			if(callback) callback(bytes);
 		});
@@ -18,8 +27,10 @@ function createClient(PORT){
 		send : function(data,lengthOrcallback,callback){
 			if(lengthOrcallback && typeof lengthOrcallback == 'function'){
 				sendAny(data,data.byteLength,lengthOrcallback);
-			}else{
+			}else if(lengthOrcallback){
 				sendAny(data,lengthOrcallback,callback);
+			}else{
+				sendAny(data,data.byteLength,callback);
 			}
 		}
 	};

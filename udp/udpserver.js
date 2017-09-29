@@ -1,7 +1,7 @@
 const dgram = require('dgram');
 
-function createServer(onData){
-	const server = dgram.createSocket('udp4');
+function createServer(PORT,onData){
+	const server = dgram.createSocket('udp6');
 	server.on('error', (err) => {
 	  server.close();
 	});
@@ -13,7 +13,8 @@ function createServer(onData){
 	  console.log('UDP server corriendo',address);
 	});
 
-	return server;
+	server.bind(PORT);
+
 }
 
 module.exports = createServer;

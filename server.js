@@ -15,7 +15,7 @@ app.get('/', function(req, res){
 });
 
 function onDectionMsg(data,rinfo){
-  io.sockets.volatile.emit('detection',data);
+  io.sockets.volatile.emit('detection',data.toString());
 }
 
 function onStreamFrame(data,rinfo){
@@ -24,16 +24,28 @@ function onStreamFrame(data,rinfo){
 	});
 }
 
+io.on('connection',function(socket){
+  socket.emit('init',conf.detection.coeficiente);
 
-udpserver(onDectionMsg).bind(conf.detection.port);
-udpserver(onStreamFrame).bind(conf.streaming.port);
+  socket.on('coefChange',function(coef){
+    console.log('se cambio el coeficiente',coef);
+    conf.detection.coeficiente = coef;
+  });
+});
+
+
+udpserver(conf.detection.port,onDectionMsg);
+udpserver(conf.streaming.port,onStreamFrame);
 
 http.listen(conf.webserver.port, function(){
   console.log('server http en ',conf.webserver.port);
 });
 
-execFile('node',['webcam.js'],{cwd:'./webcam'},onExit);
-execFile('node',['detection.js'],{cwd:'./detection'},onExit);
+var p_w = execFile('node',['webcam.js'],{cwd:'./webcam'},onExit);
+var p_d = execFile('node',['detection.js'],{cwd:'./detection'},onExit);
+
+p_w.stdout.on('data',console.log);
+p_d.stdout.on('data',console.log);
 
 function onExit(error){
   console.log(error);
