@@ -14,3 +14,7 @@ $ sudo ./install.sh
 ``` sh
 $ node server.js
 ``` 
+En otra terminal correr localtunnel
+``` sh
+$ lt --subdomain deteccion --port 8090
+``` 
