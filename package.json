@@ -6,6 +6,10 @@
   "dependencies": {
     "express": "^4.15.2",
     "opencv": "^6.0.0",
+    "pg": "^7.3.0",
+    "sequelize": "^4.15.0",
+    "sequelize-cli": "^3.0.0",
+    "sequelize-values": "^1.1.0",
     "sharp": "^0.17.3",
     "socket.io": "^2.0.3"
   },

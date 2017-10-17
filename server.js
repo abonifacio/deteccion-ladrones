@@ -1,12 +1,14 @@
 const express = require('express');
 const app = express();
+const Sequelize = require('sequelize');
+require('sequelize-values')(Sequelize);
+var models  = require('./models');
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const conf = require('./conf');
 const udpserver = require('./udp/udpserver');
 const execFile = require('child_process').execFile;
 const sharp = require('sharp');
-
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
@@ -17,7 +19,7 @@ app.get('/', function(req, res){
 function onDectionMsg(data,rinfo){
   io.sockets.volatile.emit('detection',data.toString());
 }
-
+ 
 function onStreamFrame(data,rinfo){
 	sharp(data).jpeg({quality:70}).toBuffer().then(jpeg => {
   		io.sockets.volatile.emit('frame',jpeg);
@@ -25,11 +27,16 @@ function onStreamFrame(data,rinfo){
 }
 
 io.on('connection',function(socket){
-  socket.emit('init',conf.detection.coeficiente);
-
+  models.Conf.findAll({limit:1,order: [['updatedAt', 'DESC']]}).then(config => { 
+    console.log(config[0].get('coeficiente')); 
+    socket.emit('init',config[0].get('coeficiente'));
+  })
   socket.on('coefChange',function(coef){
-    console.log('se cambio el coeficiente',coef);
-    conf.detection.coeficiente = coef;
+    models.Conf.create({coeficiente: coef }).then (
+      conf => {
+           console.log('Se cambio el coeficiente' + coef);
+      }
+  )
   });
 });
 
