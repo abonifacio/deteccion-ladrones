@@ -51,8 +51,8 @@ http.listen(conf.webserver.port, function(){
 var p_w = execFile('node',['webcam.js'],{cwd:'./webcam'},onExit);
 var p_d = execFile('node',['detection.js'],{cwd:'./detection'},onExit);
 
-p_w.stdout.on('data',console.log);
-p_d.stdout.on('data',console.log);
+//p_w.stdout.on('data',console.log);
+//p_d.stdout.on('data',console.log);
 
 function onExit(error){
   console.log(error);

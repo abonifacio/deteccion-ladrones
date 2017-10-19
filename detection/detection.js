@@ -23,6 +23,10 @@ function compare(img,coeficiente){
 		}
 		const avg = sum/N;
 		if(avg>coeficiente){
+			fecha= new Date();
+			filename= fecha.toString() + '.png';
+			img.save('../public/'+filename);
+			console.log('Imagen guardada');
 			tellServer(img,coeficiente);
 		}
 	}
