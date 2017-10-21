@@ -3,11 +3,9 @@ const detection = require('../udp/udpclient')(conf.detection.port);
 
 var Last = undefined;
 
+var COEF = conf.detection.coeficiente
 
-
-function onData(data){
-	setTimeout(compare.bind(null,data),0);
-}
+process.stdin.on('data',compare)
 
 // matriz de (conf.webcam.height x conf.webcam.width x 3[RGB]) bytes 
 function compare(img){
@@ -20,17 +18,17 @@ function compare(img){
 			sum += matrix_img.readUInt8(i) - Last.readUInt8(i);
 		}
 		const avg = sum/N;
-		if(avg>conf.detection.coeficiente){
-			tellServer(img);
+		if(avg>COEF){
+			process.stdout.write(img)
 		}
 	}
 	Last = Buffer.from(matrix_img);
 }
 
-function tellServer(img){
-	const msg = 'movimiento detectado coeficiente de '+conf.detection.coeficiente;
-	detection.send(msg,msg.length);
+function changeCoef(coef){
+	COEF = coef
 }
 
-
-module.exports = onData;
+module.exports = {
+	changeCoef : changeCoef
+};
