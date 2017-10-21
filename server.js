@@ -10,6 +10,7 @@ function Server() {
 
 	var onCoefChange = function(){}
 	var onSocketConnection = function(){}
+  var that = this
 
 	/**
 	 * Inicio Configuracion de rutas y archvios estaticos
@@ -29,7 +30,7 @@ function Server() {
 		socket.on('coefChange', function (coef) {
 			onCoefChange(coef)
 			console.log('se cambio el coeficiente', coef);
-			io.sockets.volatile.emit('newCoef',coef)
+			that.sendCoef(coef)
 		});
 	});
 	
@@ -57,8 +58,14 @@ function Server() {
 		});
 	}
 	
-	this.sendCoef = function(socket,coef){
-		socket.emit('init', coef);
+	this.sendCoef = function(arg1,arg2){
+    const socket = arguments.length==2 ? arg1 : undefined
+    const coef = arguments.length==1 ? arg1 : arg2
+    if(socket){
+		  socket.emit('init', coef);
+    }else{
+      io.sockets.volatile.emit('newCoef',coef)
+    }
 	}
 	
 }

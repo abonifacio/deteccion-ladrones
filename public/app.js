@@ -13,9 +13,9 @@ $(document).ready(function() {
 		var MAX = 2.0;
 		var that = this;
 
-		socket.on('init',function(coef){
-			init(coef);
-		});
+		socket.on('init',init);
+
+		socket.on('newCoef',init);
 
 		function init(coef){
 			actual = (1-coef/MAX)*100;

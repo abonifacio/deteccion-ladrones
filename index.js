@@ -10,8 +10,8 @@ const WEBCAM = require('./webcam/webcam')
 const SERVER = require('./server')
 
 WEBCAM.onFrame((img)=>{
-    SERVER.sendImage(data)
-    DETECTION.detect(data)
+    SERVER.sendImage(img)
+    DETECTION.detect(img)
 })
 
 DETECTION.onDetection((img)=>{
