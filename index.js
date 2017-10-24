@@ -22,9 +22,5 @@ SERVER.onSocketConnection((socket)=>{
     SERVER.sendCoef(socket,DETECTION.getCoef())
 })
 
-setInterval(function(){
-    SERVER.sendDetectionMsg('Movimiento Detectado')
-},2000)
-
 SERVER.start()
 WEBCAM.start()

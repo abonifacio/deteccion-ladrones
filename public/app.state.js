@@ -16,7 +16,9 @@
         })
         $stateProvider.state('historico',{
             url:'/historico',
-            templateUrl:'historico/historico.html'
+            templateUrl:'historico/historico.html',
+            controller:'HistoricoController',
+            controllerAs:'vm'
         })
         ;
 
