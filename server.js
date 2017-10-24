@@ -10,11 +10,20 @@ const udpserver = require('./udp/udpserver');
 //const execFile = require('child_process').execFile;
 const spawn = require('child_process').spawn;
 const sharp = require('sharp');
+var fs = require('fs');
+app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
 app.get('/', function(req, res){
   res.sendFile(__dirname+'/public/index.html');
+});
+app.get('/historico', function(req, res){
+  fs.readdir('./public/photos', function(err, items){
+    res.render('historico.jade',{
+      img: items.reverse()
+    })
+  })
 });
 
 function onDectionMsg(data,rinfo){
