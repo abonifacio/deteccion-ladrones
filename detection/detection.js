@@ -25,7 +25,7 @@ function compare(img,coeficiente){
 		if(avg>coeficiente){
 			fecha= new Date();
 			filename= fecha.toString() + '.png';
-			img.save('../public/'+filename);
+			img.save('../public/photos/'+filename);
 			console.log('Imagen guardada');
 			tellServer(img,coeficiente);
 		}

@@ -7,7 +7,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const conf = require('./conf');
 const udpserver = require('./udp/udpserver');
-const execFile = require('child_process').execFile;
+//const execFile = require('child_process').execFile;
+const spawn = require('child_process').spawn;
 const sharp = require('sharp');
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
@@ -48,8 +49,8 @@ http.listen(conf.webserver.port, function(){
   console.log('server http en ',conf.webserver.port);
 });
 
-var p_w = execFile('node',['webcam.js'],{cwd:'./webcam'},onExit);
-var p_d = execFile('node',['detection.js'],{cwd:'./detection'},onExit);
+var p_w = spawn('node',['webcam.js'],{cwd:'./webcam'},onExit);
+var p_d = spawn('node',['detection.js'],{cwd:'./detection'},onExit);
 
 //p_w.stdout.on('data',console.log);
 //p_d.stdout.on('data',console.log);
