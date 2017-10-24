@@ -1,9 +1,4 @@
-const express = require('express');
-const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
 const conf = require('./conf');
-const sharp = require('sharp');
 
 const DETECTION = require('./detection/detection')
 const WEBCAM = require('./webcam/webcam')
@@ -15,7 +10,7 @@ WEBCAM.onFrame((img)=>{
 })
 
 DETECTION.onDetection((img)=>{
-    SERVER.sendDetectionMsg('detectadao')
+    SERVER.sendDetectionMsg('Movimiento Detectado')
 })
 
 SERVER.onCoefChange((coef)=>{
@@ -26,6 +21,10 @@ SERVER.onCoefChange((coef)=>{
 SERVER.onSocketConnection((socket)=>{
     SERVER.sendCoef(socket,DETECTION.getCoef())
 })
+
+setInterval(function(){
+    SERVER.sendDetectionMsg('Movimiento Detectado')
+},2000)
 
 SERVER.start()
 WEBCAM.start()

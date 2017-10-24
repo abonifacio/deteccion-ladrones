@@ -1,0 +1,17 @@
+.item {
+    overflow: hidden;
+    transition: 0.3s;
+    opacity: 1;
+    height: 80px;
+}
+
+.item.ng-enter,.item.ng-leave.ng-leave-active {
+    height: 0px;
+    opacity: 0;
+}
+
+.item.ng-enter.ng-enter-active,.item.ng-leave {
+    opacity: 1;
+    height: 80px;
+}
+  

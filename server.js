@@ -57,10 +57,18 @@ function Server() {
 		});
 	}
 	
-	this.sendCoef = function(socket,coef){
-		socket.emit('init', coef);
+	this.sendCoef = function(arg1,arg2){
+		const socket = arg2 && arg1; 
+		const coef = arg2 || arg1;
+		if(socket){
+			socket.emit('init', coef);
+		}else{
+			io.sockets.volatile.emit('init',coef);
+		}
 	}
 	
+
+
 }
 
 
