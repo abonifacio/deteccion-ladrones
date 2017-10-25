@@ -37,9 +37,9 @@ function onStreamFrame(data,rinfo){
 }
 
 io.on('connection',function(socket){
-  models.Conf.findAll({limit:1,order: [['updatedAt', 'DESC']]}).then(config => { 
-    console.log(config[0].get('coeficiente')); 
-    socket.emit('init',config[0].get('coeficiente'));
+  models.Conf.findOne({order: [['updatedAt', 'DESC']]}).then(config => { 
+    console.log(config.get('coeficiente')); 
+    socket.emit('init',config.get('coeficiente'));
   })
   socket.on('coefChange',function(coef){
     models.Conf.create({coeficiente: coef }).then (

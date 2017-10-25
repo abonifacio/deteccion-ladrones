@@ -1,5 +1,5 @@
 'use strict';
-
+var models = require('../models'); 
 module.exports = {
   up: (queryInterface, Sequelize) => {
     /*
@@ -12,11 +12,9 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
-    Conf.create({coeficiente: 1.2}).then(
-      conf =>{
-        console.log("Agregado el seed");
-      }
-    )
+   return queryInterface.bulkInsert('Confs',[
+	{coeficiente: 1.2, createdAt: new Date(), updatedAt: new Date()}
+	]);
   },
 
   down: (queryInterface, Sequelize) => {
