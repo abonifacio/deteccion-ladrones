@@ -1,27 +1,20 @@
 const cv = require('opencv');
 const conf = require('../conf');
+const toServer = require('../udp/udpclient')(conf.ports.server_frame_in);
+const toDetection = require('../udp/udpclient')(conf.ports.detection_frame_in);
+
 
 const DELAY = 1000 / conf.webcam.fps;
 const WIDTH  = conf.webcam.width;
 const HEIGHT = conf.webcam.height;
 
-const webcam = new cv.VideoCapture(0); 
-webcam.setWidth(WIDTH);
-webcam.setHeight(HEIGHT);
 
-/**
- * @callback Camara~onData
- * @param {Image} img
- */
-
-/**
- * 
- * @param {Camara~onData} onData - Callback que maneja un frame 
- */
 function Camara(){
-	var interval = undefined
+	const webcam = new cv.VideoCapture(0); 
+	webcam.setWidth(WIDTH);
+	webcam.setHeight(HEIGHT);
 
-	var onData = function(){};
+	var interval = undefined
 	
 	this.start = function(){
 		interval = setInterval(readCamara,DELAY)
@@ -33,18 +26,16 @@ function Camara(){
 		}
 	}
 
-	this.onFrame = function(callback){
-		onData = callback
-	}
-
 	function readCamara(){
 		webcam.read((err,img)=>{
 			if(err) throw err;
-			onData(img);
+			toDetection.send(img.getData());
+			toServer.send(img.toBuffer());
 		});
 	}
 
 }
 
+const camara = new Camara();
 
-module.exports = new Camara()
+camara.start();

@@ -1,21 +1,23 @@
 const conf = {
+	ports:{
+		server:8090,
+		detection_frame_in:8080,
+		server_frame_in:8081,
+		server_detection_in:8082,
+		storage_in:8083,
+		detection_coef_in:8084,
+	},
+	database:{
+		host:'mongodb://localhost/deteccionladrones' 
+	},
 	webcam:{
-		port:8080,
 		width:640,
 		height:480,
 		fps:25
 	},
 	detection: {
-		port:8081,
 		coeficiente:1.2
-	},
-	streaming:{
-		port:8082	
-	},
-	webserver:{
-		port:8090
-	},
-	storage:{}
+	}
 }
 
 module.exports = conf;

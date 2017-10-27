@@ -1,26 +1,13 @@
-const conf = require('./conf');
+const execFile = require('child_process').execFile;
 
-const DETECTION = require('./detection/detection')
-const WEBCAM = require('./webcam/webcam')
-const SERVER = require('./server')
+var server = execFile('node',['server.js'],onExit);
+var webcam = execFile('node',['webcam.js'],{cwd:'./webcam'},onExit);
+var detection = execFile('node',['detection.js'],{cwd:'./detection'},onExit);
 
-WEBCAM.onFrame((img)=>{
-    SERVER.sendImage(img)
-    DETECTION.detect(img)
-})
+server.stdout.on('data',console.log);
+webcam.stdout.on('data',console.log);
+detection.stdout.on('data',console.log);
 
-DETECTION.onDetection((img)=>{
-    SERVER.sendDetectionMsg('Movimiento Detectado')
-})
-
-SERVER.onCoefChange((coef)=>{
-    DETECTION.setCoef(coef)
-    SERVER.sendCoef(coef)
-})
-
-SERVER.onSocketConnection((socket)=>{
-    SERVER.sendCoef(socket,DETECTION.getCoef())
-})
-
-SERVER.start()
-WEBCAM.start()
+function onExit(error){
+  console.log(error);
+}

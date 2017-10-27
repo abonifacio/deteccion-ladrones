@@ -6,14 +6,18 @@ function createServer(PORT,onData){
 	  server.close();
 	});
 	
-	server.on('message',onData);
-
 	server.on('listening', () => {
-	  const address = server.address();
+		const address = server.address();
 	  console.log('UDP server corriendo',address);
 	});
-
-	server.bind(PORT);
+	
+	
+	return {
+		listen : function(onData){
+			server.on('message',onData);
+			server.bind(PORT);
+		}
+	}
 
 }
 

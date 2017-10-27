@@ -3,14 +3,20 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const conf = require('./conf');
+const mongoose = require('mongoose');
+const Image = require('./storage/image.model');
 const sharp = require('sharp');
+const toDetection = require('./udp/udpclient')(conf.ports.detection_coef_in);
+const fromDetection = require('./udp/udpserver')(conf.ports.server_detection_in);
+const fromWebcam = require('./udp/udpserver')(conf.ports.server_frame_in);
 
+mongoose.connect(conf.database.host);
+
+var COEF = conf.detection.coeficiente;
 
 function Server() {
 
-	var onCoefChange = function(){}
-	var onSocketConnection = function(){}
-  var that = this
+  	var that = this;
 
 	/**
 	 * Inicio Configuracion de rutas y archvios estaticos
@@ -21,30 +27,31 @@ function Server() {
 	app.get('/', function (req, res) {
 		res.sendFile(__dirname + '/public/index.html');
 	});
+	app.get('/historico', function (req, res) {
+		Image.find({},function(err,fotos){
+			if(err) throw err;
+			res.send(fotos);
+		});
+	});
 	/**
 	 * Fin Configuracion de rutas y archvios estaticos
 	 */
 
 	io.on('connection', function (socket) {
-		onSocketConnection(socket)
+		socket.emit('init',COEF);
+		
 		socket.on('coefChange', function (coef) {
-			onCoefChange(coef)
+			COEF = coef;
+			io.sockets.volatile.emit('init',coef);
+			const tmp = String(coef);
+			toDetection.send(tmp,Buffer.byteLength(tmp, 'utf8'));
 			console.log('se cambio el coeficiente', coef);
-			that.sendCoef(coef)
 		});
 	});
 	
-	this.onCoefChange = function(callback){
-		onCoefChange = callback
-	}
-	
-	this.onSocketConnection = function(callback){
-		onSocketConnection = callback
-	}
-	
 	this.start = function(){
-		http.listen(conf.webserver.port, function () {
-			console.log('server http en ', conf.webserver.port);
+		http.listen(conf.ports.server, function () {
+			console.log('server http en ', conf.ports.server);
 		});
 	}
 	
@@ -57,20 +64,20 @@ function Server() {
 			io.sockets.volatile.emit('frame', jpeg);
 		});
 	}
-	
-	this.sendCoef = function(arg1,arg2){
-		const socket = arg2 && arg1; 
-		const coef = arg2 || arg1;
-		if(socket){
-			socket.emit('init', coef);
-		}else{
-			io.sockets.volatile.emit('newCoef',coef);
-		}
-	}
-	
 
 
 }
 
+fromDetection.listen(function(msg){
+	server.sendDetectionMsg(msg);
+});
 
-module.exports = new Server()
+fromWebcam.listen(function(frame){
+	server.sendImage(frame);
+});
+
+const server = new Server();
+
+server.start();
+
+
