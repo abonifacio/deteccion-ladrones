@@ -9,15 +9,6 @@ server.stdout.on('data',console.log);
 webcam.stdout.on('data',console.log);
 detection.stdout.on('data',console.log);
 storage.stdout.on('data',console.log);
-storage.stderr.on('data',console.log);
-
-// process.on('SIGINT',function(){
-//   console.log('Cerrando todo');
-//   process.kill(server.pid);
-//   process.kill(webcam.pid);
-//   process.kill(detection.pid);
-//   process.kill(storage.pid);
-// })
 
 function onExit(error){
   console.log(error);

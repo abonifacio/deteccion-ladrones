@@ -1,7 +1,7 @@
 const cv = require('opencv');
 const conf = require('../conf');
-const toServer = require('../udp/udpclient')(conf.ports.server_frame_in);
-const toDetection = require('../udp/udpclient')(conf.ports.detection_frame_in);
+const toServer = require('../ipc/speaker')(conf.ports.server_frame_in);
+const toDetection = require('../ipc/speaker')(conf.ports.detection_frame_in);
 
 
 const DELAY = 1000 / conf.webcam.fps;
@@ -29,8 +29,13 @@ function Camara(){
 	function readCamara(){
 		webcam.read((err,img)=>{
 			if(err) throw err;
-			toDetection.send(img.getData());
-			toServer.send(img.toBuffer());
+			const tmp = {
+				buffer: img.toBuffer()
+			}
+			img.convertGrayscale();
+			tmp.matrix = img.getData();
+			toDetection.send(tmp);
+			toServer.send(tmp.buffer);
 		});
 	}
 

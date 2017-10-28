@@ -5,9 +5,9 @@
     angular.module('deteccionLadronesApp')
     .controller('HistoricoController',HistoricoController)
     
-    HistoricoController.$inject = ['HistoricoService'];
+    HistoricoController.$inject = ['$scope','HistoricoService'];
     
-    function HistoricoController(HistoricoService){
+    function HistoricoController($scope,HistoricoService){
         var vm = this;
 
         vm.fotos = [];
@@ -40,6 +40,8 @@
         }
 
         vm.refresh();
+
+        $scope.$on('detection',vm.refresh);
         
     }
 

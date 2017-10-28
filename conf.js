@@ -11,8 +11,8 @@ const conf = {
 		host:'mongodb://localhost/deteccionladrones' 
 	},
 	webcam:{
-		width:100,
-		height:100,
+		width:480,
+		height:360,
 		channels:3,
 		fps:25
 	},

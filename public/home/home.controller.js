@@ -5,39 +5,56 @@
     angular.module('deteccionLadronesApp')
     .controller('HomeController',HomeController)
     
-    HomeController.$inject = ['SocketService'];
+    HomeController.$inject = ['$scope','$timeout'];
     
-    function HomeController(SocketService){
+    function HomeController($scope,$timeout){
         var vm = this;
         
-        var video = new Video(SocketService);
-        vm.alerts = new Alerts(SocketService);
-        vm.sensibilidad = new Sensibilidad(SocketService);
+        var video = new Video();
+        vm.alerts = new Alerts($timeout);
+        vm.sensibilidad = new Sensibilidad();
+
+        $scope.$on('setCoef',function(event,coef){
+            vm.sensibilidad.init(coef);
+        });
+        vm.sensibilidad.onCoefChange(function(coef){
+            $scope.$emit('sendCoef',coef);
+        });
+
+        $scope.$on('detection',function(event,msg){
+            vm.alerts.add(msg);
+        });
+
+        $scope.$on('frame',function(event,data){
+            video.drawFrame(data);
+        });
+
         
     }
 
-    function Sensibilidad(socket){
+    function Sensibilidad(){
         var actual = 0;
         var coef = 0;
         var MAX = 2.0;
         var that = this;
+        var coefChange = function(){};
     
-        socket.on('init',init);
+        // socket.on('init',init);
     
-        function init(coef){
+        this.init = function(coef){
             actual = (1-coef/MAX)*100;
         }
 
         this.inc = function(){
             if(actual<90){
                 actual += 10;
-                sendCoef();
+                coefChange(getCoef());
             }
         };
         this.dec = function(){
             if(actual>10){
                 actual -= 10;
-                sendCoef();
+                coefChange(getCoef());
             }
         };
 
@@ -48,27 +65,28 @@
         function getCoef(){
             return (1-actual/100)*MAX;
         }
-    
-        function sendCoef(){
-            socket.emit('coefChange',getCoef());
+   
+        this.onCoefChange = function(cb){
+            coefChange = cb;
         }
     }
-    function Alerts(socket){
+    function Alerts($timeout){
         var alerts = []
         var that = this;
-    
-        socket.on('detection',function(msg){
-            that.add(msg);
-        });
+        var alertTimeout = undefined;
     
         this.add = function(msg){
-            if(alerts.size>2) return;
-            var alert = {msg:msg,title:'¡Atención!'};
-            alerts.push(alert);
-            setTimeout(function(){
-                var i = alerts.indexOf(alert);
-                alerts.splice(i,1);
-            },5000);
+            if(alerts.length>0){
+                $timeout.cancel(alertTimeout);
+                alertTimeout = $timeout(removeAlert,2000);
+            }else{
+                alerts.push({msg:msg,title:'¡Atención!'});
+                alertTimeout = $timeout(removeAlert,2000);
+            }
+        }
+
+        function removeAlert(){
+            alerts.pop();
         }
 
         this.get = function(){
@@ -81,7 +99,7 @@
     
     }
     
-    function Video(socket){
+    function Video(){
         var image 	= new Image();
         var canvas 	= document.getElementById("video-canvas");
         var ctx 	= canvas.getContext("2d");
@@ -89,10 +107,6 @@
         resizeCanvas();
         $(window).on("resize", function(){                      
             resizeCanvas();
-        });
-    
-        socket.on('frame',function(data){
-            drawImage(ctx,data);
         });
     
         function resizeCanvas(){
@@ -103,7 +117,7 @@
             ctx.stroke();
         }
     
-        function drawImage(ctx, buffer) {
+        this.drawFrame = function(buffer) {
             var uint8Arr = new Uint8Array(buffer);
             var str = String.fromCharCode.apply(null, uint8Arr);
             var base64String = btoa(str);
@@ -112,6 +126,8 @@
             };
             image.src = 'data:image/png;base64,' + base64String;
         }
+        
+
     
     }
 

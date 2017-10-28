@@ -6,9 +6,9 @@ const conf = require('./conf');
 const mongoose = require('mongoose');
 const Image = require('./storage/image.model');
 const sharp = require('sharp');
-const toDetection = require('./udp/udpclient')(conf.ports.detection_coef_in);
-const fromDetection = require('./udp/udpserver')(conf.ports.server_detection_in);
-const fromWebcam = require('./udp/udpserver')(conf.ports.server_frame_in);
+const toDetection = require('./ipc/speaker')(conf.ports.detection_coef_in);
+const fromDetection = require('./ipc/listener')(conf.ports.server_detection_in);
+const fromWebcam = require('./ipc/listener')(conf.ports.server_frame_in);
 
 mongoose.connect(conf.database.host);
 
@@ -36,7 +36,7 @@ function Server() {
 		});
 	});
 	function getAll(res){
-		Image.find({},function(err,fotos){
+		Image.find({},{},{sort: {time:-1}, limit:10},function(err,fotos){
 			if(err) throw err;
 			res.send(fotos);
 		});
@@ -68,7 +68,7 @@ function Server() {
 	}
 	
 	this.sendImage = function (img) {
-		sharp(img).jpeg({ quality: 70 }).toBuffer().then(jpeg => {
+		sharp(Buffer.from(img.data)).jpeg({ quality: 70 }).toBuffer().then(jpeg => {
 			io.sockets.volatile.emit('frame', jpeg);
 		});
 	}

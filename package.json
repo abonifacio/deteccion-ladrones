@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.15.2",
+    "messenger": "0.0.9",
     "mongoose": "^4.12.4",
     "opencv": "^6.0.0",
     "sharp": "^0.17.3",

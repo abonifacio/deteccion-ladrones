@@ -1,8 +1,8 @@
 const conf = require('../conf');
-const fromWebcam = require('../udp/udpserver')(conf.ports.detection_frame_in);
-const fromServer = require('../udp/udpserver')(conf.ports.detection_coef_in);
-const toServer = require('../udp/udpclient')(conf.ports.server_detection_in);
-const toStorage = require('../udp/udpclient')(conf.ports.storage_in);
+const fromWebcam = require('../ipc/listener')(conf.ports.detection_frame_in);
+const fromServer = require('../ipc/listener')(conf.ports.detection_coef_in);
+const toServer = require('../ipc/speaker')(conf.ports.server_detection_in);
+const toStorage = require('../ipc/speaker')(conf.ports.storage_in);
 
 function Detection(){
 	var Last = undefined;
@@ -10,7 +10,7 @@ function Detection(){
 	
 	// matriz de (conf.webcam.height x conf.webcam.width x 3[RGB]) bytes 
 	this.detect = function(img){
-		const matrix_img = img;
+		const matrix_img = Buffer.from(img.matrix.data);
 		const N = matrix_img.byteLength;
 		var sum = 0;
 		var i;
@@ -21,7 +21,7 @@ function Detection(){
 			const avg = sum/N;
 			if(avg>COEF){
 				toServer.send('Movimiento Detectado');
-				toStorage.send(img);
+				toStorage.send(img.buffer);
 			}
 		}
 		Last = Buffer.from(matrix_img);
