@@ -20,7 +20,7 @@ function Detection(){
 			}
 			const avg = sum/N;
 			if(avg>COEF){
-				toServer.send('Detectado');
+				toServer.send('Movimiento Detectado');
 				toStorage.send(img);
 			}
 		}

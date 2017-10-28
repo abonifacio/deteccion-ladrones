@@ -26,11 +26,19 @@ function createClient(PORT){
 	return {
 		send : function(data,lengthOrcallback,callback){
 			if(lengthOrcallback && typeof lengthOrcallback == 'function'){
-				sendAny(data,data.byteLength,lengthOrcallback);
+				if(typeof data == 'string'){
+					sendAny(data,data.length,lengthOrcallback);
+				}else{
+					sendAny(data,data.byteLength,lengthOrcallback);
+				}
 			}else if(lengthOrcallback){
 				sendAny(data,lengthOrcallback,callback);
 			}else{
-				sendAny(data,data.byteLength,callback);
+				if(typeof data == 'string'){
+					sendAny(data,data.length,callback);
+				}else{
+					sendAny(data,data.byteLength,callback);
+				}
 			}
 		}
 	};

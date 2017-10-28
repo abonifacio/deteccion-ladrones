@@ -28,11 +28,19 @@ function Server() {
 		res.sendFile(__dirname + '/public/index.html');
 	});
 	app.get('/historico', function (req, res) {
+		getAll(res);
+	});
+	app.delete('/historico', function (req, res) {
+		Image.remove({},function(){
+			getAll(res);
+		});
+	});
+	function getAll(res){
 		Image.find({},function(err,fotos){
 			if(err) throw err;
 			res.send(fotos);
 		});
-	});
+	}
 	/**
 	 * Fin Configuracion de rutas y archvios estaticos
 	 */
@@ -60,7 +68,7 @@ function Server() {
 	}
 	
 	this.sendImage = function (img) {
-		sharp(img.toBuffer()).jpeg({ quality: 70 }).toBuffer().then(jpeg => {
+		sharp(img).jpeg({ quality: 70 }).toBuffer().then(jpeg => {
 			io.sockets.volatile.emit('frame', jpeg);
 		});
 	}

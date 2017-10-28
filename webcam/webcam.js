@@ -36,6 +36,10 @@ function Camara(){
 
 }
 
+process.on('SIGTERM',()=>{
+	camara.stop();
+})
+
 const camara = new Camara();
 
 camara.start();
