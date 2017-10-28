@@ -3,6 +3,8 @@ const detection = require('../udp/udpclient')(conf.detection.port);
 const Sequelize = require('sequelize');
 var Last = undefined;
 var models  = require('../models');
+var gpio = require('rpi-gpio');
+gpio.setup(4,gpio.DIR_OUT,buzzer);
 
 
 function onData(data){
@@ -28,9 +30,15 @@ function compare(img,coeficiente){
 			img.save('../public/photos/'+filename);
 			console.log('Imagen guardada');
 			tellServer(img,coeficiente);
+			buzzer();
 		}
 	}
 	Last = Buffer.from(matrix_img);
+}
+function buzzer(){
+	setTimeout(function(){
+		gpio.write(4,true, compare);
+	}, 500);
 }
 
 function tellServer(img,coeficiente){
