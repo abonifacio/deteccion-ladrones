@@ -4,9 +4,6 @@ const Sequelize = require('sequelize');
 var Last = undefined;
 var models  = require('../models');
 const spawn = require('child_process').spawn;
-//var gpio = require('rpi-gpio');
-//gpio.setup(4,gpio.DIR_OUT,buzzer);
-
 
 function onData(data){
 	models.Conf.findAll({limit:1,order: [['updatedAt', 'DESC']]}).then(function(config) { 
@@ -32,16 +29,10 @@ function compare(img,coeficiente){
 			console.log('Imagen guardada');
 			tellServer(img,coeficiente);
 			var p_b = spawn('python',['buzzer.py'],{cwd: '..'});
-//			buzzer();
 		}
 	}
 	Last = Buffer.from(matrix_img);
 }
-//function buzzer(){
-//	setTimeout(function(){
-//		gpio.write(4,true, compare);
-//	}, 500);
-//}
 
 function tellServer(img,coeficiente){
 	const msg = 'movimiento detectado coeficiente de '+coeficiente;
