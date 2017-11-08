@@ -7,7 +7,6 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const conf = require('./conf');
 const udpserver = require('./udp/udpserver');
-//const execFile = require('child_process').execFile;
 const spawn = require('child_process').spawn;
 const sharp = require('sharp');
 var fs = require('fs');
@@ -18,6 +17,9 @@ app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 app.get('/', function(req, res){
   res.sendFile(__dirname+'/public/index.html');
 });
+
+
+//Si se clickea el link a 'Historico' se renderiza la pagina y se le pasa la lista de archivos en la carpeta photos 
 app.get('/historico', function(req, res){
   fs.readdir('./public/photos', function(err, items){
     res.render('historico.jade',{
@@ -36,6 +38,7 @@ function onStreamFrame(data,rinfo){
 	});
 }
 
+//Cuando un cliente se conecta al servidor, carga el ultimo coeficiente de sensibilidad. Cuando el usuario cambia el valor del coeficiente, lo guarda en la base de datos
 io.on('connection',function(socket){
   models.Conf.findOne({order: [['updatedAt', 'DESC']]}).then(config => { 
     console.log(config.get('coeficiente')); 
@@ -58,11 +61,9 @@ http.listen(conf.webserver.port, function(){
   console.log('server http en ',conf.webserver.port);
 });
 
+//Crea un proceso para la webcam y otro para la deteccion de movimiento.
 var p_w = spawn('node',['webcam.js'],{cwd:'./webcam'},onExit);
 var p_d = spawn('node',['detection.js'],{cwd:'./detection'},onExit);
-
-//p_w.stdout.on('data',console.log);
-//p_d.stdout.on('data',console.log);
 
 function onExit(error){
   console.log(error);

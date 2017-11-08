@@ -1,8 +1,4 @@
 const dgram = require('dgram');
-
-// data -> ArrayBuffer
-// callback -> function(bytes){}
-
 const MSG_MAXSIZE = 65526;
 
 function createClient(PORT){
