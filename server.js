@@ -10,9 +10,11 @@ const udpserver = require('./udp/udpserver');
 const spawn = require('child_process').spawn;
 const sharp = require('sharp');
 var fs = require('fs');
+const formidable = require('formidable');
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
+const nodemailer = require('nodemailer');
 
 app.get('/', function(req, res){
   res.sendFile(__dirname+'/public/index.html');
@@ -27,6 +29,29 @@ app.get('/historico', function(req, res){
     })
   })
 });
+
+//Si se clickea el link a 'Configurar mail' se renderiza la pagina
+app.get('/Configurar_mail', function(req, res){
+  res.render('configurar_mail.jade',{})
+});
+
+app.post('/Configurar_mail',function(req,res){
+  procesarForm(req,res);
+  });
+
+
+function procesarForm(req,res){
+var form = new formidable.IncomingForm();
+form.parse(req, function (err, fields, files) {
+  console.log('hola ' + fields.input_email +' '+ fields.input_check);  
+  models.Mail.create({contenido: fields.input_email, check: fields.input_check}).then(
+   usu => {
+      console.log( usu.contenido + ' ' + usu.check); 
+  res.render('configurar_mail.jade',{})
+});
+});
+}
+
 
 function onDectionMsg(data,rinfo){
   io.sockets.volatile.emit('detection',data.toString());
