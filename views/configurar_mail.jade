@@ -27,7 +27,7 @@ html
             div(class="row")
                 form(action="/configurar_mail", method="post")
                     div(class="col-sm-3")
-                        input(type="text", name="input_email", required, class="form-control", id="exampleInputEmail1" aria-describedby="emailHelp", placeholder="Ingrese su email")
+                        input(type="email", name="input_email", required, class="form-control", id="exampleInputEmail1" aria-describedby="emailHelp", placeholder="Ingrese su email")
                         input(type="checkbox", name="input_check", checked=false, value=off)
                         span   Activar notificaciones
                     div(class="col-sm-6")
