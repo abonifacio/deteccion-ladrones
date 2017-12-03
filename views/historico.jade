@@ -6,6 +6,7 @@ html
         link(rel="stylesheet", href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
         link(rel="stylesheet", href="/bower_components/bootstrap-material-design/dist/css/bootstrap-material-design.min.css")
         link(rel="stylesheet", href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css")
+        link(href="/lightbox.css", rel="stylesheet")
     body
         div(class="navbar navbar-default")
             div(class="container-fluid")
@@ -24,11 +25,13 @@ html
         div(class="container")
             div(class="row")
                 each f in img
-                    div(class="col-sm-4")
-                        img(src="photos/"+f, class="img-thumbnail", alt=f)
-
+                    div(class="col-sm-2")
+                        a(href="photos/"+f, data-lightbox="image01" , data-title=f)
+                            img(src="photos/"+f, height="200", width="200", class="img-thumbnail", alt=f)
+        
         script(type="text/javascript",src="/bower_components/jquery/dist/jquery.min.js")
         script(type="text/javascript", src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
         script(type="text/javascript", src="/bower_components/bootstrap-material-design/dist/js/material.min.js")
         script(type="text/javascript", src="/bower_components/socket.io-client/dist/socket.io.js")
-        
+        script(src="/lightbox.js")
+

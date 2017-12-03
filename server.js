@@ -23,7 +23,7 @@ app.get('/', function(req, res){
 app.get('/historico', function(req, res){
   fs.readdir('./public/photos', function(err, items){
     res.render('historico.jade',{
-      img: items.reverse()
+      img: items.reverse() //.slice(0,15)  //Muestra solo las ultimas 15 fotos
     })
   })
 });
