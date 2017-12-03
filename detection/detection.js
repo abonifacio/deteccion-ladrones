@@ -47,8 +47,8 @@ function compare(img,coeficiente){
 					transporter.sendMail({
 						from: 'deteccionladrones@gmail.com', 
 						to: mails[0].contenido, 
-						subject: 'Se ha detectado un mensaje sospechoso ',
-						text: 'Hubo un movimiento sospechoso en su cada'},
+						subject: 'Se ha detectado un movimiento sospechoso ',
+						text: 'Hubo un movimiento sospechoso en su casa'},
 						function(err){
 						if(err)
 							console.log('Mail no enviado!');
