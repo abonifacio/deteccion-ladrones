@@ -79,7 +79,6 @@ $(document).ready(function() {
 			return `<div class="alert alert-dismissible alert-warning" style="display: none;">
 						<button type="button" class="close" data-dismiss="alert">×</button>
 						<h4>¡Atención!</h4>
-
 						<p>Movimiento detectado</p>
 					</div>`;
 		}

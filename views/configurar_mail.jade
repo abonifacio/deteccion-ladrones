@@ -8,7 +8,6 @@ html
         link(rel="stylesheet", href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css")
     body
         div(class="navbar navbar-default")
-            div(class="container-fluid")
             div(class="navbar-header")
                 button(type="button", class="navbar-toggle", data-toggle="collapse", data-target=".navbar-responsive-collapse")
                 span(class="icon-bar")
@@ -20,18 +19,20 @@ html
                     li
                         a(href="/") Home
                     li(class="active")
-                        a(href="/historico") Histórico
                     li
-                        a(href="/Configurar_mail") Configurar mail
+                        a(href="/historico") Histórico
                     li(class="active")
+                        a(href="/configurar_mail") Configurar mail
         div(class="container")
             div(class="row")
-                each f in img
-                    div(class="col-sm-4")
-                        img(src="photos/"+f, class="img-thumbnail", alt=f)
-
+                form(action="/configurar_mail", method="post")
+                    div(class="col-sm-3")
+                        input(type="email", name="input_email", required, class="form-control", id="exampleInputEmail1" aria-describedby="emailHelp", placeholder="Ingrese su email")
+                        input(type="checkbox", name="input_check", checked=false, value=off)
+                        span   Activar notificaciones
+                    div(class="col-sm-6")
+                        button(type="submit", class="btn btn-primary") Aceptar  
         script(type="text/javascript",src="/bower_components/jquery/dist/jquery.min.js")
         script(type="text/javascript", src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
         script(type="text/javascript", src="/bower_components/bootstrap-material-design/dist/js/material.min.js")
         script(type="text/javascript", src="/bower_components/socket.io-client/dist/socket.io.js")
-        
